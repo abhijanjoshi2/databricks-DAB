@@ -1,0 +1,30 @@
+bundle:
+  name: sales-analytics
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog_name:
+    description: Unity Catalog name
+    default: main
+  schema_name:
+    description: Schema name for tables
+    default: sales_analytics
+
+targets:
+  dev:
+    mode: development
+    workspace:
+      host: https://your-workspace.cloud.databricks.com
+    variables:
+      catalog_name: main
+      schema_name: dev_sales_analytics
+
+  prod:
+    mode: production
+    workspace:
+      host: https://your-workspace.cloud.databricks.com
+    variables:
+      catalog_name: main
+      schema_name: prod_sales_analytics

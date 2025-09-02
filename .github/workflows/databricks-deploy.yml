@@ -13,6 +13,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     name: Validate Bundle
+    environment: Prod
     
     steps:
     - name: Checkout code
@@ -42,6 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy to Databricks
     needs: validate
+    environment: Prod
     if: github.event_name == 'push'
     
     steps:
@@ -79,6 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Run Tests
     needs: deploy
+    environment: Prod
     if: github.event_name == 'push' && github.ref != 'refs/heads/main'
     
     steps:

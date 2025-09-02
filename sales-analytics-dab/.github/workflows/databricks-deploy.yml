@@ -23,10 +23,18 @@ jobs:
       with:
         databricks-cli-version: latest
 
-    - name: Validate bundle configuration
+    - name: Configure Databricks CLI with Service Principal
       env:
         DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+        DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+      run: |
+        echo "Configuring Databricks CLI with Service Principal authentication"
+        databricks auth login --host $DATABRICKS_HOST \
+          --client-id $DATABRICKS_CLIENT_ID \
+          --client-secret $DATABRICKS_CLIENT_SECRET
+
+    - name: Validate bundle configuration
       run: |
         databricks bundle validate --target $DATABRICKS_BUNDLE_ENV
 
@@ -45,19 +53,24 @@ jobs:
       with:
         databricks-cli-version: latest
 
-    - name: Deploy bundle
+    - name: Configure Databricks CLI with Service Principal
       env:
         DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+        DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+      run: |
+        echo "Configuring Databricks CLI with Service Principal authentication"
+        databricks auth login --host $DATABRICKS_HOST \
+          --client-id $DATABRICKS_CLIENT_ID \
+          --client-secret $DATABRICKS_CLIENT_SECRET
+
+    - name: Deploy bundle
       run: |
         echo "Deploying to environment: $DATABRICKS_BUNDLE_ENV"
         databricks bundle deploy --target $DATABRICKS_BUNDLE_ENV
 
     - name: Run sales analytics job (dev only)
       if: env.DATABRICKS_BUNDLE_ENV == 'dev'
-      env:
-        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
       run: |
         echo "Running sales analytics job in dev environment"
         databricks bundle run sales_analytics_job --target dev --wait
@@ -75,10 +88,17 @@ jobs:
     - name: Setup Databricks CLI
       uses: databricks/setup-cli@main
 
-    - name: Run data quality checks
+    - name: Configure Databricks CLI with Service Principal
       env:
         DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+        DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+      run: |
+        databricks auth login --host $DATABRICKS_HOST \
+          --client-id $DATABRICKS_CLIENT_ID \
+          --client-secret $DATABRICKS_CLIENT_SECRET
+
+    - name: Run data quality checks
       run: |
         echo "Running basic data quality checks"
         # You can add more sophisticated testing here

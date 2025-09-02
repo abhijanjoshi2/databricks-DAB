@@ -26,6 +26,7 @@ targets:
     workspace:
       host: https://dbc-3ef25b18-8263.cloud.databricks.com
       profile: prod
+      root_path: /Workspace/Users/abhijanjoshi2@gmail.com/.bundle/${bundle.name}/${bundle.target}
     variables:
       catalog_name: main
       schema_name: prod_sales_analytics

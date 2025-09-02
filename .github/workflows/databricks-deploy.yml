@@ -5,6 +5,7 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 env:
   DATABRICKS_BUNDLE_ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}

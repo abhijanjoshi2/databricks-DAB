@@ -1,0 +1,18 @@
+resources:
+  jobs:
+    sales_analytics_job:
+      name: "Sales Analytics Pipeline"
+      tasks:
+        - task_key: "sales_processing"
+          notebook_task:
+            notebook_path: "../src/sales_analytics"
+          cluster:
+            spark_version: "13.3.x-scala2.12"
+            node_type_id: "i3.xlarge"
+            num_workers: 1
+          timeout_seconds: 3600
+      email_notifications:
+        on_failure:
+          - "your-email@example.com"
+      timeout_seconds: 3600
+      max_concurrent_runs: 1

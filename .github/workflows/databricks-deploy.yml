@@ -36,13 +36,25 @@ jobs:
     #       --client-id $DATABRICKS_CLIENT_ID \
     #       --client-secret $DATABRICKS_CLIENT_SECRET
 
+    - name: Configure Databricks CLI
+      run: |
+        mkdir -p ~/.databricks
+        cat <<EOF > ~/.databricks/config
+        [profiles.prod]
+        host = "${DATABRICKS_HOST}"
+        token = "${DATABRICKS_TOKEN}"
+        EOF
+      env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        
     - name: Validate bundle configuration
       env:
         DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
         DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
       run: |
         databricks auth env
-        # databricks bundle validate --target $DATABRICKS_BUNDLE_ENV
+        databricks bundle validate --target $DATABRICKS_BUNDLE_ENV
      
 
   deploy:

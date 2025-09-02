@@ -43,7 +43,7 @@ jobs:
       run: |
         # mkdir -p ~/.databricks
         cat <<EOF > ~/.databrickscfg
-        [profiles.prod]
+        [prod]
         host = "${DATABRICKS_HOST}"
         token = "${DATABRICKS_TOKEN}"
         EOF

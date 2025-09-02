@@ -1,0 +1,86 @@
+name: Deploy Databricks Bundle
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DATABRICKS_BUNDLE_ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Bundle
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Databricks CLI
+      uses: databricks/setup-cli@main
+      with:
+        databricks-cli-version: latest
+
+    - name: Validate bundle configuration
+      env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      run: |
+        databricks bundle validate --target $DATABRICKS_BUNDLE_ENV
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Databricks
+    needs: validate
+    if: github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Databricks CLI
+      uses: databricks/setup-cli@main
+      with:
+        databricks-cli-version: latest
+
+    - name: Deploy bundle
+      env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      run: |
+        echo "Deploying to environment: $DATABRICKS_BUNDLE_ENV"
+        databricks bundle deploy --target $DATABRICKS_BUNDLE_ENV
+
+    - name: Run sales analytics job (dev only)
+      if: env.DATABRICKS_BUNDLE_ENV == 'dev'
+      env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      run: |
+        echo "Running sales analytics job in dev environment"
+        databricks bundle run sales_analytics_job --target dev --wait
+
+  test:
+    runs-on: ubuntu-latest
+    name: Run Tests
+    needs: deploy
+    if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Databricks CLI
+      uses: databricks/setup-cli@main
+
+    - name: Run data quality checks
+      env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      run: |
+        echo "Running basic data quality checks"
+        # You can add more sophisticated testing here
+        databricks bundle run sales_analytics_job --target dev --wait
+        echo "Data quality checks completed"

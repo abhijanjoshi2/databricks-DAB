@@ -25,16 +25,16 @@ jobs:
       with:
         databricks-cli-version: latest
 
-    - name: Configure Databricks CLI with Service Principal
-      env:
-        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-        DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
-        DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
-      run: |
-        echo "Configuring Databricks CLI with Service Principal authentication"
-        databricks auth login --host $DATABRICKS_HOST \
-          --client-id $DATABRICKS_CLIENT_ID \
-          --client-secret $DATABRICKS_CLIENT_SECRET
+    # - name: Configure Databricks CLI with Service Principal
+    #   env:
+    #     DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+    #     DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+    #     DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+    #   run: |
+    #     echo "Configuring Databricks CLI with Service Principal authentication"
+    #     databricks auth login --host $DATABRICKS_HOST \
+    #       --client-id $DATABRICKS_CLIENT_ID \
+    #       --client-secret $DATABRICKS_CLIENT_SECRET
 
     - name: Validate bundle configuration
       run: |

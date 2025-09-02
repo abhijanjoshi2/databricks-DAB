@@ -20,13 +20,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # - name: Setup Databricks CLI
-    #   uses: databricks/setup-cli@main
-    #   with:
-    #     databricks-cli-version: latest
+    - name: Setup Databricks CLI
+      uses: databricks/setup-cli@main
+      with:
+        databricks-cli-version: latest
 
-    - name: Install Databricks CLI (bundles)
-      run: pip install databricks-cli-bundle
+    # - name: Install Databricks CLI (bundles)
+    #   run: pip install databricks-cli-bundle
 
     # - name: Configure Databricks CLI with Service Principal
     #   env:
@@ -41,13 +41,13 @@ jobs:
 
     - name: Configure Databricks CLI
       run: |
-        mkdir -p ~/.databricks
-        cat <<EOF > ~/.databricks/config
+        # mkdir -p ~/.databricks
+        cat <<EOF > ~/.databrickscfg
         [profiles.prod]
         host = "${DATABRICKS_HOST}"
         token = "${DATABRICKS_TOKEN}"
         EOF
-        cat ~/.databricks/config
+        cat ~/.databrickscfg
       env:
         DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
         DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}

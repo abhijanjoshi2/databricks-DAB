@@ -25,6 +25,7 @@ targets:
     mode: production
     workspace:
       host: https://dbc-3ef25b18-8263.cloud.databricks.com
+      profile: prod
     variables:
       catalog_name: main
       schema_name: prod_sales_analytics

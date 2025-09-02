@@ -58,7 +58,8 @@ jobs:
         DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
       run: |
         databricks auth env --profile prod
-        databricks bundle validate --target $DATABRICKS_BUNDLE_ENV
+        # databricks bundle validate --target $DATABRICKS_BUNDLE_ENV
+        databricks bundle deploy --target $DATABRICKS_BUNDLE_ENV
      
 
   deploy:
